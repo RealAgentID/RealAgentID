@@ -1,3 +1,9 @@
+# RealAgentID Audit Module
+# Compliance note: This module logs metadata only by default.
+# Payload content is never logged unless explicitly enabled.
+# See COMPLIANCE.md for framework mappings and data retention guidance.
+# Designed toward: SOC 2, GDPR, HIPAA, NIST AI RMF, EU AI Act
+
 import json
 import time
 import os
