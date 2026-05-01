@@ -1,8 +1,8 @@
 {
   "coordinator": {
-    "public_key": "9f78822962dd381548c5366f7ead33627d4c135b4822ad8490cc9a3d07710adc"
+    "public_key": "c5c8aff9de933e0773a1da5a6dc90088b242ed43d22a6586ebff03b08f569d53"
   },
   "worker-1": {
-    "public_key": "84ebd2a0c5df8f2ad997a326d0aed8fda5503267dc76e42177d987e47d22f95d"
+    "public_key": "cfb681dbaf6f9c0b54d2e467529be96acdf12913df497f7e2c35f57f0d3ede49"
   }
 }
