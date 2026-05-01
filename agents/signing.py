@@ -14,10 +14,10 @@ import redis
 
 sys.path.insert(0, os.path.dirname(__file__))
 import audit
+import schema
 
-# Redis connection for replay tracking
 r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
-REPLAY_TTL = 300  # 5 minutes
+REPLAY_TTL = 300
 
 def load_private_key(path: str):
     with open(path, "rb") as f:
@@ -79,6 +79,8 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
     message = signed["message"]
     agent_id = message["agent_id"]
     message_id = message.get("message_id")
+    channel = message.get("channel", "unknown")
+    payload = message.get("payload", {})
 
     # TTL check
     message_age = time.time() - message["timestamp"]
@@ -86,20 +88,34 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
         print(f"[RealAgentID] X Message expired")
         raise ValueError(f"Message expired: {message_age:.1f}s exceeds TTL {ttl_seconds}s")
 
-    # Replay check via Redis
+    # Replay check
     replay_key = f"seen_msg:{message_id}"
     if r.exists(replay_key):
         print(f"[RealAgentID] X Replay attack detected - message_id already used: {message_id}")
         audit.write_log(
             event="replay_attack_blocked",
             agent_id=agent_id,
-            channel=message.get("channel", "unknown"),
+            channel=channel,
             result="INVALID",
             message_id=message_id,
             reason="replay_detected"
         )
         raise ValueError(f"Replay attack blocked: message_id {message_id} already used")
     r.setex(replay_key, REPLAY_TTL, "1")
+
+    # Payload schema validation
+    valid, reason = schema.validate_payload(channel, payload)
+    if not valid:
+        print(f"[RealAgentID] X Payload schema violation - {reason}")
+        audit.write_log(
+            event="payload_schema_violation",
+            agent_id=agent_id,
+            channel=channel,
+            result="INVALID",
+            message_id=message_id,
+            reason=reason
+        )
+        raise ValueError(f"Payload schema violation: {reason}")
 
     # Registry lookup
     public_key_hex = get_public_key(agent_id)
@@ -117,7 +133,7 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
         audit.write_log(
             event="registry_verification",
             agent_id=agent_id,
-            channel=message.get("channel"),
+            channel=channel,
             result="VALID",
             message_id=message_id,
             latency_ms=latency
@@ -128,7 +144,7 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
         audit.write_log(
             event="registry_verification",
             agent_id=agent_id,
-            channel=message.get("channel", "unknown"),
+            channel=channel,
             result="INVALID",
             reason="tamper_detected"
         )
@@ -143,8 +159,4 @@ if __name__ == "__main__":
         payload={"task": "analyze", "target": "dataset-7"}
     )
     print("Signed message created")
-    verified = verify_message(
-        signed_json=signed,
-        public_key_path="./keys/coordinator_public.pem"
-    )
-    print(f"Verified payload: {verified['payload']}")
+    verified
