@@ -1,8 +1,11 @@
-import json, os
+import json
+import redis
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 
-REGISTRY_FILE = "agent_registry.json"
+r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+
+AGENT_TTL = 86400
 
 def register_agent_from_key(agent_id, public_key_pem_path):
     with open(public_key_pem_path, "rb") as f:
@@ -10,32 +13,27 @@ def register_agent_from_key(agent_id, public_key_pem_path):
     public_key_hex = public_key.public_bytes(
         Encoding.Raw, PublicFormat.Raw
     ).hex()
-    registry = load_registry()
-    registry[agent_id] = {"public_key": public_key_hex}
-    save_registry(registry)
-    print(f"[+] Agent '{agent_id}' registered.")
+    r.setex(f"agent:{agent_id}", AGENT_TTL, json.dumps({"public_key": public_key_hex}))
+    print(f"[+] Agent '{agent_id}' registered in Redis (TTL: {AGENT_TTL}s).")
 
 def get_public_key(agent_id):
-    registry = load_registry()
-    return registry.get(agent_id, {}).get("public_key")
+    data = r.get(f"agent:{agent_id}")
+    if data is None:
+        return None
+    return json.loads(data).get("public_key")
 
 def list_agents():
-    registry = load_registry()
-    if not registry:
+    keys = r.keys("agent:*")
+    if not keys:
         print("No agents registered.")
         return
-    for agent_id, data in registry.items():
-        print(f"  {agent_id}: {data['public_key'][:16]}...")
-
-def load_registry():
-    if os.path.exists(REGISTRY_FILE):
-        with open(REGISTRY_FILE) as f:
-            return json.load(f)
-    return {}
-
-def save_registry(registry):
-    with open(REGISTRY_FILE, "w") as f:
-        json.dump(registry, f, indent=2)
+    for key in keys:
+        agent_id = key.split(":", 1)[1]
+        data = r.get(key)
+        if data:
+            pub_key = json.loads(data).get("public_key", "")
+            ttl = r.ttl(key)
+            print(f"  {agent_id}: {pub_key[:16]}... (TTL: {ttl}s)")
 
 if __name__ == "__main__":
     list_agents()

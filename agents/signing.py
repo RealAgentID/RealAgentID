@@ -10,8 +10,14 @@ import uuid
 import base64
 import sys
 import os
+import redis
+
 sys.path.insert(0, os.path.dirname(__file__))
 import audit
+
+# Redis connection for replay tracking
+r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+REPLAY_TTL = 300  # 5 minutes
 
 def load_private_key(path: str):
     with open(path, "rb") as f:
@@ -46,7 +52,7 @@ def verify_message(signed_json: str, public_key_path: str) -> dict:
         start = time.time()
         public_key.verify(signature, message_bytes)
         latency = (time.time() - start) * 1000
-        print(f"[RealAgentID] √ Signature VALID - from agent: {message['agent_id']}")
+        print(f"[RealAgentID] ✓ Signature VALID - from agent: {message['agent_id']}")
         audit.write_log(
             event="signature_verified",
             agent_id=message["agent_id"],
@@ -72,13 +78,34 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
     signed = json.loads(signed_json)
     message = signed["message"]
     agent_id = message["agent_id"]
+    message_id = message.get("message_id")
+
+    # TTL check
     message_age = time.time() - message["timestamp"]
     if message_age > ttl_seconds:
         print(f"[RealAgentID] X Message expired")
         raise ValueError(f"Message expired: {message_age:.1f}s exceeds TTL {ttl_seconds}s")
+
+    # Replay check via Redis
+    replay_key = f"seen_msg:{message_id}"
+    if r.exists(replay_key):
+        print(f"[RealAgentID] X Replay attack detected - message_id already used: {message_id}")
+        audit.write_log(
+            event="replay_attack_blocked",
+            agent_id=agent_id,
+            channel=message.get("channel", "unknown"),
+            result="INVALID",
+            message_id=message_id,
+            reason="replay_detected"
+        )
+        raise ValueError(f"Replay attack blocked: message_id {message_id} already used")
+    r.setex(replay_key, REPLAY_TTL, "1")
+
+    # Registry lookup
     public_key_hex = get_public_key(agent_id)
     if not public_key_hex:
         raise ValueError(f"[RealAgentID] Unknown agent: {agent_id} - not in registry")
+
     public_key = Ed25519PublicKey.from_public_bytes(bytes.fromhex(public_key_hex))
     signature = base64.b64decode(signed["signature"])
     message_bytes = json.dumps(message, sort_keys=True).encode()
@@ -86,13 +113,13 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
         start = time.time()
         public_key.verify(signature, message_bytes)
         latency = (time.time() - start) * 1000
-        print(f"[RealAgentID] √ Registry verification VALID - agent: {agent_id}")
+        print(f"[RealAgentID] ✓ Registry verification VALID - agent: {agent_id}")
         audit.write_log(
             event="registry_verification",
             agent_id=agent_id,
             channel=message.get("channel"),
             result="VALID",
-            message_id=message.get("message_id"),
+            message_id=message_id,
             latency_ms=latency
         )
         return message
@@ -121,4 +148,3 @@ if __name__ == "__main__":
         public_key_path="./keys/coordinator_public.pem"
     )
     print(f"Verified payload: {verified['payload']}")
-

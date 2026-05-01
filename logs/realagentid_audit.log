@@ -5,3 +5,11 @@
 {"timestamp": "2026-05-01T01:34:47.547454+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "0b035548-b92c-4d86-9cdf-3d9d461fad50", "latency_ms": 0.16}
 {"timestamp": "2026-05-01T01:38:56.931233+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "afc4e6e8-bdd6-437d-8d78-40e5a8041733", "latency_ms": 0.073}
 {"timestamp": "2026-05-01T01:38:56.932518+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "tamper_detected"}
+{"timestamp": "2026-05-01T13:59:45.120259+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "tamper_detected"}
+{"timestamp": "2026-05-01T14:01:22.308314+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "tamper_detected"}
+{"timestamp": "2026-05-01T14:06:15.571448+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "tamper_detected"}
+{"timestamp": "2026-05-01T14:06:15.573780+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "27d552fd-bbc5-4ec1-b887-6273281d7131", "latency_ms": 0.076}
+{"timestamp": "2026-05-01T14:06:17.575524+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "27d552fd-bbc5-4ec1-b887-6273281d7131", "latency_ms": 0.134}
+{"timestamp": "2026-05-01T14:12:34.444048+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "tamper_detected"}
+{"timestamp": "2026-05-01T14:12:34.445618+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "9049df97-e37b-4228-9076-1ac54a3faa8d", "latency_ms": 0.075}
+{"timestamp": "2026-05-01T14:12:36.446777+00:00", "event": "replay_attack_blocked", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "replay_detected", "message_id": "9049df97-e37b-4228-9076-1ac54a3faa8d"}
