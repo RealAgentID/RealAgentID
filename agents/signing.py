@@ -46,7 +46,7 @@ def verify_message(signed_json: str, public_key_path: str) -> dict:
         start = time.time()
         public_key.verify(signature, message_bytes)
         latency = (time.time() - start) * 1000
-        print(f"[RealAgentID] ✓ Signature VALID — from agent: {message['agent_id']}")
+        print(f"[RealAgentID] √ Signature VALID - from agent: {message['agent_id']}")
         audit.write_log(
             event="signature_verified",
             agent_id=message["agent_id"],
@@ -57,10 +57,46 @@ def verify_message(signed_json: str, public_key_path: str) -> dict:
         )
         return message
     except InvalidSignature:
-        print(f"[RealAgentID] ✗ Signature INVALID — message rejected")
+        print(f"[RealAgentID] X Signature INVALID - message rejected")
         audit.write_log(
             event="signature_rejected",
             agent_id=message.get("agent_id", "unknown"),
+            channel=message.get("channel", "unknown"),
+            result="INVALID",
+            reason="tamper_detected"
+        )
+        raise
+
+def verify_message_from_registry(signed_json: str) -> dict:
+    from registry import get_public_key
+    signed = json.loads(signed_json)
+    message = signed["message"]
+    agent_id = message["agent_id"]
+    public_key_hex = get_public_key(agent_id)
+    if not public_key_hex:
+        raise ValueError(f"[RealAgentID] Unknown agent: {agent_id} - not in registry")
+    public_key = Ed25519PublicKey.from_public_bytes(bytes.fromhex(public_key_hex))
+    signature = base64.b64decode(signed["signature"])
+    message_bytes = json.dumps(message, sort_keys=True).encode()
+    try:
+        start = time.time()
+        public_key.verify(signature, message_bytes)
+        latency = (time.time() - start) * 1000
+        print(f"[RealAgentID] √ Registry verification VALID - agent: {agent_id}")
+        audit.write_log(
+            event="registry_verification",
+            agent_id=agent_id,
+            channel=message.get("channel"),
+            result="VALID",
+            message_id=message.get("message_id"),
+            latency_ms=latency
+        )
+        return message
+    except InvalidSignature:
+        print(f"[RealAgentID] X Registry verification FAILED - agent: {agent_id}")
+        audit.write_log(
+            event="registry_verification",
+            agent_id=agent_id,
             channel=message.get("channel", "unknown"),
             result="INVALID",
             reason="tamper_detected"

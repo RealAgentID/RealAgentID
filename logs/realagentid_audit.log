@@ -1,1 +1,2 @@
 {"timestamp": "2026-04-30T11:34:44.606005+00:00", "event": "signature_verified", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "e5d5d9ba-dbd3-46a1-b5f7-ed5574610782", "latency_ms": 0.203}
+{"timestamp": "2026-05-01T00:30:54.263059+00:00", "event": "signature_verified", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "d7266d44-4946-4743-b543-cd53c7a55231", "latency_ms": 0.097}
