@@ -67,11 +67,15 @@ def verify_message(signed_json: str, public_key_path: str) -> dict:
         )
         raise
 
-def verify_message_from_registry(signed_json: str) -> dict:
+def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> dict:
     from registry import get_public_key
     signed = json.loads(signed_json)
     message = signed["message"]
     agent_id = message["agent_id"]
+    message_age = time.time() - message["timestamp"]
+    if message_age > ttl_seconds:
+        print(f"[RealAgentID] X Message expired")
+        raise ValueError(f"Message expired: {message_age:.1f}s exceeds TTL {ttl_seconds}s")
     public_key_hex = get_public_key(agent_id)
     if not public_key_hex:
         raise ValueError(f"[RealAgentID] Unknown agent: {agent_id} - not in registry")
