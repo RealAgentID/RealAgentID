@@ -110,3 +110,39 @@ RealAgentID provides the tools. Compliance is a shared responsibility.
 *Apache 2.0 — open source, always.*
 *RealAgentID is not a law firm and this is not legal advice.*
 *Consult qualified compliance counsel for your specific requirements.*
+
+---
+
+### NIST AI RMF Mapping
+
+| Function | AI RMF Function | Subcategory |
+|---|---|---|
+| keygen.py + registry.py | GOVERN | GV-1.1 - AI risk policies established |
+| signing.py | MAP | MP-2.3 - AI system trustworthiness evaluated |
+| verify_message_from_registry() | MEASURE | MS-2.5 - AI system identity verified |
+| audit.py | MANAGE | MG-2.2 - Incident response logs maintained |
+| tamper_test.py | MEASURE | MS-1.1 - AI risk evaluated and tested |
+
+---
+
+### EU AI Act Mapping
+
+| RealAgentID Control | EU AI Act Requirement | Article |
+|---|---|---|
+| Agent identity verification | Traceability of AI system actions | Art. 12 |
+| Audit logging via audit.py | Record-keeping for high-risk AI | Art. 12 |
+| Tamper detection | Robustness and cybersecurity | Art. 15 |
+| Registry-based trust | Human oversight enablement | Art. 14 |
+| TTL enforcement | Accuracy and reliability controls | Art. 15 |
+
+---
+
+### HIPAA Mapping
+
+| RealAgentID Control | HIPAA Safeguard | Rule |
+|---|---|---|
+| Agent identity via keygen.py | Unique user identification | 164.312(a)(2)(i) |
+| Registry verification | Person or entity authentication | 164.312(d) |
+| Audit logging via audit.py | Audit controls | 164.312(b) |
+| Message signing | Transmission integrity | 164.312(e)(2)(i) |
+| TTL enforcement | Automatic logoff equivalent | 164.312(a)(2)(iii) |
