@@ -13,3 +13,6 @@
 {"timestamp": "2026-05-01T14:12:34.444048+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "tamper_detected"}
 {"timestamp": "2026-05-01T14:12:34.445618+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "9049df97-e37b-4228-9076-1ac54a3faa8d", "latency_ms": 0.075}
 {"timestamp": "2026-05-01T14:12:36.446777+00:00", "event": "replay_attack_blocked", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "replay_detected", "message_id": "9049df97-e37b-4228-9076-1ac54a3faa8d"}
+{"timestamp": "2026-05-01T18:28:22.230832+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "tamper_detected"}
+{"timestamp": "2026-05-01T18:28:22.237186+00:00", "event": "registry_verification", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "032b35e4-705e-42de-9731-803c7353bb32", "latency_ms": 0.082}
+{"timestamp": "2026-05-01T18:28:24.241933+00:00", "event": "replay_attack_blocked", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "INVALID", "reason": "replay_detected", "message_id": "032b35e4-705e-42de-9731-803c7353bb32"}

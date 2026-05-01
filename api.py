@@ -52,6 +52,20 @@ def verify():
     except Exception as e:
         return jsonify({"result": "INVALID", "reason": str(e)}), 403
 
+@app.route('/audit', methods=['GET'])
+def audit_log():
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'agents'))
+    import db
+    agent_id = request.args.get('agent_id')
+    event = request.args.get('event')
+    result = request.args.get('result')
+    limit = int(request.args.get('limit', 50))
+    rows = db.query_events(agent_id=agent_id, event=event, result=result, limit=limit)
+    columns = ['id', 'timestamp', 'event', 'agent_id', 'channel', 'result', 'message_id', 'reason', 'latency_ms']
+    events = [dict(zip(columns, row)) for row in rows]
+    return jsonify({"count": len(events), "events": events}), 200
+
 if __name__ == "__main__":
     print("[RealAgentID] API starting on http://0.0.0.0:5000")
     app.run(host="0.0.0.0", port=5000, debug=False)
