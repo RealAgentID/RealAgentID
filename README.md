@@ -22,3 +22,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 python3 tests/test_full_run.py
 
+## Requirements
+
+- Python 3.12+
+- Redis
+
+## Setup Redis
+
+**Ubuntu/Debian**
+'''bash
+sudo apt install redis-server -y
+sudo service redis start
+redis cli-ping
+
+- Should return PONG
