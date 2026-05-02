@@ -30,6 +30,7 @@ def generate_agent_identity(agent_name: str, keys_dir: str = "./keys"):
     print(f"  Private key: {keys_dir}/{agent_name}_private.pem")
     print(f"  Public key:  {keys_dir}/{agent_name}_public.pem")
     print(f"  Manifest:    {keys_dir}/{agent_name}_identity.json")
+    return {"agent_id": agent_name, "public_key": f"{keys_dir}/{agent_name}_public.pem", "manifest": f"{keys_dir}/{agent_name}_identity.json"}
 
 if __name__ == "__main__":
     import sys
