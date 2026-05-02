@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import sys
 
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'logs', 'realagentid.db')
 
@@ -25,7 +26,8 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
-    print("[RealAgentID DB] audit_log table ready.")
+    import sys; print("[RealAgentID DB] audit_log table ready.",
+    file=sys.stderr)
 
 def insert_event(timestamp, event, agent_id, channel, result, message_id=None, reason=None, latency_ms=None):
     conn = get_connection()
