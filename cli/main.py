@@ -49,7 +49,7 @@ def main():
         for a in (agents or []):
             print(a)
     elif args.command == "sign":
-        signed = sign_message(args.agent_id, args.message, args.privkey, args.channel)
+        signed = sign_message(args.agent_id, args.privkey,args.channel, {"message": args.message})
         print(signed)
     elif args.command == "verify":
         result = verify_message(args.signed_json, args.pubkey)
@@ -59,7 +59,7 @@ def main():
         print(f"[+] Revoked {args.agent_id}")
     elif args.command == "audit":
         logs = read_log()
-        for entry in logs:
+        for entry in (logs or []):
             print(entry)
     else:
         parser.print_help()
