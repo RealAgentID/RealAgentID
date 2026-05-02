@@ -1,4 +1,5 @@
-keys/*_private.pem
-keys/*_identity.json
-agents/_pycache_/
+keys/
+venv/
+_pycache_/
 *.pyc
+/tmp/
