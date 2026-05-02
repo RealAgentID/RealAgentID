@@ -33,3 +33,4 @@
 {"timestamp": "2026-05-02T12:37:45.301265+00:00", "event": "signature_verified", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "0697423a-5189-490d-ac02-53aa4cc780cb", "latency_ms": 0.11}
 {"timestamp": "2026-05-02T12:57:09.968993+00:00", "event": "signature_verified", "agent_id": "coordinator", "channel": "tasks:worker-1", "result": "VALID", "message_id": "0cccdc36-ba58-4490-a943-712d17a687d2", "latency_ms": 0.098}
 {"timestamp": "2026-05-02T17:45:16.101802+00:00", "event": "signature_verified", "agent_id": "signal_gen", "channel": "signal:btc", "result": "VALID", "message_id": "2031ac5e-0759-4ed8-ad2c-b3a2f0c63286", "latency_ms": 0.25}
+{"timestamp": "2026-05-02T17:57:29.337587+00:00", "event": "signature_verified", "agent_id": "risk_guard", "channel": "risk:btc", "result": "VALID", "message_id": "f590caad-9d4a-4cdd-ae7d-c384b26c9691", "latency_ms": 0.21}
