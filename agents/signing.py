@@ -16,8 +16,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 import audit
 import schema
 
-r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
-REPLAY_TTL = 300
+from connection import get_redis, REPLAY_TTL, ROLE_PERMISSIONS
+r = get_redis()
 
 def load_private_key(path: str):
     with open(path, "rb") as f:
@@ -74,7 +74,7 @@ def verify_message(signed_json: str, public_key_path: str) -> dict:
         raise
 
 def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> dict:
-    from registry import get_public_key
+    from registry import get_public_key, get_role
     signed = json.loads(signed_json)
     message = signed["message"]
     agent_id = message["agent_id"]
@@ -122,6 +122,22 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
     if not public_key_hex:
         raise ValueError(f"[RealAgentID] Unknown agent: {agent_id} - not in registry")
 
+    # Role check
+    agent_role = get_role(agent_id)
+    allowed_channels = ROLE_PERMISSIONS.get(agent_role, [])
+    channel_prefix = channel.split(":")[0] + ":*"
+    if "*" not in allowed_channels and channel_prefix not in allowed_channels:
+        print(f"[RealAgentID] X Role violation - agent: {agent_id} has role '{agent_role}', not permitted on channel '{channel}'")
+        audit.write_log(
+            event="role_violation",
+            agent_id=agent_id,
+            channel=channel,
+            result="INVALID",
+            message_id=message_id,
+            reason=f"role '{agent_role}' not permitted on channel '{channel}'"
+        )
+        raise ValueError(f"Role violation: agent '{agent_id}' has role '{agent_role}', not permitted on channel '{channel}'")
+
     public_key = Ed25519PublicKey.from_public_bytes(bytes.fromhex(public_key_hex))
     signature = base64.b64decode(signed["signature"])
     message_bytes = json.dumps(message, sort_keys=True).encode()
@@ -159,4 +175,9 @@ if __name__ == "__main__":
         payload={"task": "analyze", "target": "dataset-7"}
     )
     print("Signed message created")
-    verified
+    verified = verify_message(
+        signed_json=signed,
+        public_key_path="./keys/coordinator_public.pem"
+    )
+    print(f"Verified payload: {verified['payload']}")
+
