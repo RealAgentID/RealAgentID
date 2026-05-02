@@ -1,16 +1,24 @@
+# RealAgentID
 
-## Redis Backend (v2)
+![RealAgentID]()
 
-RealAgentID now uses Redis as its registry backend, replacing the flat JSON file.
+Cryptographic identity verification for AI agents. Prevents spoofing, replay attacks, and unauthorized commands before they reach your infrastructure.
 
-### What changed
-- Agent identities stored in Redis with native TTL expiration (24 hours)
-- Replay attacks blocked via Redis message ID tracking (5 minute window)
-- Registry is persistent across restarts and distributable across nodes
+## What It Does
 
-### Requirements
-- Redis server running locally (`sudo service redis-server start`)
-- Python redis client (`pip install redis --break-system-packages`)
+- Generates Ed25519 keypairs per agent
+- Signs and verifies messages cryptographically
+- Blocks replay attacks via Redis TTL nonces
+- Detects payload tampering
+- Logs all events to a tamper-evident audit trail
 
-### How replay protection works
-Every message carries a unique `message_id` (UUID4). On verification, the ID is checked against Redis. If it already exists, the message is rejected and the event is logged to the audit trail. First use passes. Second use is blocked — every time.
+## Quick Start
+
+```bash
+git clone https://github.com/RealAgentID/RealAgentID.git
+cd RealAgentID
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 tests/test_full_run.py
+
