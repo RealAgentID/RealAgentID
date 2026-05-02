@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import audit
 import schema
 
-from connection import get_redis, REPLAY_TTL, ROLE_PERMISSIONS
+from core.connection import get_redis, REPLAY_TTL, ROLE_PERMISSIONS
 r = get_redis()
 
 def load_private_key(path: str):

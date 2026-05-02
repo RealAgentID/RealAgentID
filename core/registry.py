@@ -3,7 +3,7 @@ import redis
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 
-from connection import get_redis, AGENT_TTL, VALID_ROLES
+from core.connection import get_redis, AGENT_TTL, VALID_ROLES
 r = get_redis()
 
 def register_agent_from_key(agent_id, public_key_pem_path, role="worker"):
