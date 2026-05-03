@@ -79,6 +79,7 @@ sudo apt install redis-server -y
 sudo service redis start
 redis-cli ping
 
-## License
+## Licensing
 
-MIT - see LICENSE
+RealAgentID core is MIT licensed and free forever. Enterprise adapters and the Control Center are available under a commercial license. 
+Contact support@realagentid.io for enterprise inquiries.
