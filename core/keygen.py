@@ -3,6 +3,7 @@ from cryptography.hazmat.primitives.serialization import (
     Encoding, PrivateFormat, PublicFormat, NoEncryption
 )
 import os
+import sys
 import json
 
 def generate_agent_identity(agent_name: str, keys_dir: str = "./keys"):
@@ -26,7 +27,7 @@ def generate_agent_identity(agent_name: str, keys_dir: str = "./keys"):
     with open(f"{keys_dir}/{agent_name}_identity.json", "w") as f:
         json.dump(manifest, f, indent=2)
 
-    print(f"[RealAgentID] Identity generated for: {agent_name}")
+    print(f"[RealAgentID] Identity generated for: {agent_name}", file=sys.stderr)
     print(f"  Private key: {keys_dir}/{agent_name}_private.pem")
     print(f"  Public key:  {keys_dir}/{agent_name}_public.pem")
     print(f"  Manifest:    {keys_dir}/{agent_name}_identity.json")

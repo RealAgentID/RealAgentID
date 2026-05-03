@@ -45,7 +45,7 @@ def write_log(event: str, agent_id: str, channel: str, result: str, reason=None,
         reason=entry.get("reason"),
         latency_ms=entry.get("latency_ms")
     )
-    print(f"[RealAgentID AUDIT] {result} | {event} | agent: {agent_id}")
+    print(f"[RealAgentID AUDIT] {result} | {event} | agent: {agent_id}", file=sys.stderr)
 
 def read_log():
     if not os.path.exists(LOG_FILE):

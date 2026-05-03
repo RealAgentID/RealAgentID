@@ -1,0 +1,53 @@
+Metadata-Version: 2.1
+Name: realagentid
+Version: 0.1.0
+Summary: Cryptographic identity verification for AI agents
+Home-page: https://github.com/RealAgentID/RealAgentID
+Author: RealAgentID
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Security :: Cryptography
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# RealAgentID
+
+![RealAgentID]()
+
+Cryptographic identity verification for AI agents. Prevents spoofing, replay attacks, and unauthorized commands before they reach your infrastructure.
+
+## What It Does
+
+- Generates Ed25519 keypairs per agent
+- Signs and verifies messages cryptographically
+- Blocks replay attacks via Redis TTL nonces
+- Detects payload tampering
+- Logs all events to a tamper-evident audit trail
+
+## Quick Start
+
+```bash
+git clone https://github.com/RealAgentID/RealAgentID.git
+cd RealAgentID
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 tests/test_full_run.py
+
+## Requirements
+
+- Python 3.12+
+- Redis
+
+## Setup Redis
+
+**Ubuntu/Debian**
+'''bash
+sudo apt install redis-server -y
+sudo service redis start
+redis cli-ping
+
+- Should return PONG

@@ -1,3 +1,4 @@
+import sys
 import json
 import redis
 from cryptography.hazmat.primitives.serialization import load_pem_public_key

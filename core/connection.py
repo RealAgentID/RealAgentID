@@ -49,5 +49,5 @@ def get_redis() -> redis.Redis:
         client.ping()
         return client
     except redis.ConnectionError as e:
-        print(f"[RealAgentID] CRITICAL - Redis unavailable: {e}")
+        print(f"[RealAgentID] CRITICAL - Redis unavailable: {e}", file=sys.stderr)
         raise RuntimeError(f"Redis connection failed: {e}") from e
