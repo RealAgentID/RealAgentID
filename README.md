@@ -1,38 +1,84 @@
 # RealAgentID
 
-![RealAgentID]()
+![RealAgentID](assets/logo.png)
 
-Cryptographic identity verification for AI agents. Prevents spoofing, replay attacks, and unauthorized commands before they reach your infrastructure.
+**Blockchain-grade security at inference speed.**
+
+The trust layer for AI agent networks. RealAgentID gives every AI agent a cryptographic identity - preventing spoofing, replay attacks, and unauthorized
+commands before the reach your infrastructure.
+
+> "As agentic AI redefines what's possible, the boldest organizations will set the pace of transformation." -Databricks, 2026 State of AI Agents
+
+## The Problem
+
+AI agents are executing trades, routing medical decisions, processing legal contracts, and running R&D pipelines. Nobody knows if the agent sending
+the command is actually who it says it is.
+
+## The Solution
+
+RealAgentID is the missing trust layer - cryptographic identity for verification for AI agents  that operates at subsecond latency, invisible to your
+real time inference pipeline.
 
 ## What It Does
 
-- Generates Ed25519 keypairs per agent
-- Signs and verifies messages cryptographically
+- Generates Ed25519 cryptographic keypairs per agent
+- Signs and verifies messages with sub-millisecond latency
 - Blocks replay attacks via Redis TTL nonces
-- Detects payload tampering
+- Detects payload tampering in real time
 - Logs all events to a tamper-evident audit trail
+- Tracks behavioral patterns via local AI analysis
 
 ## Quick Start
 
-```bash
-git clone https://github.com/RealAgentID/RealAgentID.git
+'''bash
+git clone https://github.com/
+RealAgentID/RealAgentID.git
 cd RealAgentID
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python3 tests/test_full_run.py
 
+## SDK
+
+from realagentid import Agent
+
+agent = Agent(name="signal_gen", role="signal_gen")
+agent.keygen()
+agent.register()
+signed = agent.sign({"action": "buy", "asset": "BTC"}, channel="signal:btc")
+verified = agent.verify(signed)
+
+## CLI
+
+python3 cli/main.py keygen --name my_agent
+python3 cli/main.py register --agent-id my_agent --pubkey ./keys/my_agent.pem --role worker
+python3 cli/main.py list
+python3 cli/main.py sign --agent-id my_agent --message "hello" --privkey ./keys/my_agent_private.pem --channel tasks:default
+python3 cli/main.py audit
+
+## Verticals
+
+Finance - trade signal verification, strategy scoring, SEC/FINRA audit trails
+
+Healthcare - clinical trial matching, revenue cycle management, R&D pipeline integrity
+
+Legal - precedent based agent coaching, contract execution verification
+
+Research - verified research intelligence, reproducible AI agent workflows
+
 ## Requirements
 
-- Python 3.12+
-- Redis
+Python 3.12+
+
+Redis
 
 ## Setup Redis
 
-**Ubuntu/Debian**
-'''bash
 sudo apt install redis-server -y
 sudo service redis start
-redis cli-ping
+redis-cli ping
 
-- Should return PONG
+## License
+
+MIT - see LICENSE
