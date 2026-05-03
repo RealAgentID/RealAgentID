@@ -45,3 +45,5 @@
 {"timestamp": "2026-05-03T01:47:38.602713+00:00", "event": "signature_verified", "agent_id": "test_agent", "channel": "tasks:default", "result": "VALID", "message_id": "10d6906c-cf85-4c37-b59c-d0a72d3ad46c", "latency_ms": 0.18}
 {"timestamp": "2026-05-03T01:47:38.739500+00:00", "event": "signature_verified", "agent_id": "sdk_test_agent", "channel": "signal:btc", "result": "VALID", "message_id": "b0d7f2c3-9c00-4c0a-812e-e00dba3887aa", "latency_ms": 0.08}
 {"timestamp": "2026-05-03T01:54:05.504557+00:00", "event": "signature_verified", "agent_id": "sdk_test_agent", "channel": "signal:btc", "result": "VALID", "message_id": "2420cae2-8386-4261-bdc4-3c41a25451a1", "latency_ms": 0.08}
+{"timestamp": "2026-05-03T01:56:56.086964+00:00", "event": "signature_verified", "agent_id": "test_agent", "channel": "tasks:default", "result": "VALID", "message_id": "14a4f148-8414-4bea-adba-aa7965574fcf", "latency_ms": 0.185}
+{"timestamp": "2026-05-03T01:56:56.225256+00:00", "event": "signature_verified", "agent_id": "sdk_test_agent", "channel": "signal:btc", "result": "VALID", "message_id": "1b19b13c-9022-48a2-ac91-43796c892aa9", "latency_ms": 0.081}
