@@ -52,7 +52,7 @@ def verify_message(signed_json: str, public_key_path: str) -> dict:
         start = time.time()
         public_key.verify(signature, message_bytes)
         latency = (time.time() - start) * 1000
-        print(f"[RealAgentID] ✓ Signature VALID - from agent: {message['agent_id']}")
+        print(f"[RealAgentID] ✓ Signature VALID - from agent: {message['agent_id']}", file=sys.stderr)
         audit.write_log(
             event="signature_verified",
             agent_id=message["agent_id"],
@@ -63,7 +63,7 @@ def verify_message(signed_json: str, public_key_path: str) -> dict:
         )
         return message
     except InvalidSignature:
-        print(f"[RealAgentID] X Signature INVALID - message rejected")
+        print(f"[RealAgentID] X Signature INVALID - message rejected", file=sys.stderr)
         audit.write_log(
             event="signature_rejected",
             agent_id=message.get("agent_id", "unknown"),
@@ -85,13 +85,13 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
     # TTL check
     message_age = time.time() - message["timestamp"]
     if message_age > ttl_seconds:
-        print(f"[RealAgentID] X Message expired")
+        print(f"[RealAgentID] X Message expired", file=sys.stderr)
         raise ValueError(f"Message expired: {message_age:.1f}s exceeds TTL {ttl_seconds}s")
 
     # Replay check
     replay_key = f"seen_msg:{message_id}"
     if r.exists(replay_key):
-        print(f"[RealAgentID] X Replay attack detected - message_id already used: {message_id}")
+        print(f"[RealAgentID] X Replay attack detected - message_id already used: {message_id}", file=sys.stderr)
         audit.write_log(
             event="replay_attack_blocked",
             agent_id=agent_id,
@@ -106,7 +106,7 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
     # Payload schema validation
     valid, reason = schema.validate_payload(channel, payload)
     if not valid:
-        print(f"[RealAgentID] X Payload schema violation - {reason}")
+        print(f"[RealAgentID] X Payload schema violation - {reason}", file=sys.stderr)
         audit.write_log(
             event="payload_schema_violation",
             agent_id=agent_id,
@@ -127,7 +127,7 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
     allowed_channels = ROLE_PERMISSIONS.get(agent_role, [])
     channel_prefix = channel.split(":")[0] + ":*"
     if "*" not in allowed_channels and channel_prefix not in allowed_channels:
-        print(f"[RealAgentID] X Role violation - agent: {agent_id} has role '{agent_role}', not permitted on channel '{channel}'")
+        print(f"[RealAgentID] X Role violation - agent: {agent_id} has role '{agent_role}', not permitted on channel '{channel}'", file=sys.stderr)
         audit.write_log(
             event="role_violation",
             agent_id=agent_id,
@@ -145,7 +145,7 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
         start = time.time()
         public_key.verify(signature, message_bytes)
         latency = (time.time() - start) * 1000
-        print(f"[RealAgentID] ✓ Registry verification VALID - agent: {agent_id}")
+        print(f"[RealAgentID] ✓ Registry verification VALID - agent: {agent_id}", file=sys.stderr)
         audit.write_log(
             event="registry_verification",
             agent_id=agent_id,
@@ -156,7 +156,7 @@ def verify_message_from_registry(signed_json: str, ttl_seconds: int = 300) -> di
         )
         return message
     except InvalidSignature:
-        print(f"[RealAgentID] X Registry verification FAILED - agent: {agent_id}")
+        print(f"[RealAgentID] X Registry verification FAILED - agent: {agent_id}", file=sys.stderr)
         audit.write_log(
             event="registry_verification",
             agent_id=agent_id,
